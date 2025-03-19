@@ -98,6 +98,9 @@ jobs:
           distribution: goreleaser
           version: '~> v2'
           install-only: true
+      - name: Export HOME Env
+        run: |-
+          echo "HOME=$HOME" >> "$GITHUB_ENV"
       - name: Set tag
         run: |-
           git ls-remote --exit-code --tags origin v${{ needs.calculate_version.outputs.version }} || echo "PUBLISHED=false" >> "$GITHUB_ENV"
