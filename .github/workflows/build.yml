@@ -135,6 +135,7 @@ jobs:
         with:
           path: dist
           merge-multiple: true
+      - run: ls -R dist
       - name: Merge builds
         run: |-
           mkdir -p dist/release
