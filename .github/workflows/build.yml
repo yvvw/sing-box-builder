@@ -138,7 +138,7 @@ jobs:
       - name: Merge builds
         run: |-
           mkdir -p dist/release
-          mv dist/*/sing-box*{tar.gz,zip,deb,rpm,_amd64.pkg.tar.zst,_arm64.pkg.tar.zst} dist/release
+          mv dist/sing-box*{tar.gz,zip,deb,rpm,_amd64.pkg.tar.zst,_arm64.pkg.tar.zst} dist/release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload builds
