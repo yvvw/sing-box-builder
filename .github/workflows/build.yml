@@ -108,7 +108,7 @@ jobs:
       - name: Build
         if: matrix.goos != 'android'
         run: |-
-          goreleaser release --clean
+          goreleaser release --clean --snapshot
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
