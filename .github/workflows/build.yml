@@ -90,7 +90,7 @@ jobs:
       - name: Setup Goreleaser
         uses: goreleaser/goreleaser-action@v6
         with:
-          distribution: goreleaser-pro
+          distribution: goreleaser
           version: '~> v2'
           install-only: true
       - name: Set tag
@@ -129,7 +129,7 @@ jobs:
       - name: Setup Goreleaser
         uses: goreleaser/goreleaser-action@v6
         with:
-          distribution: goreleaser-pro
+          distribution: goreleaser
           version: '~> v2'
           install-only: true
       - name: Cache ghr
