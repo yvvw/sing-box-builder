@@ -100,7 +100,7 @@ jobs:
       - name: Build
         if: matrix.goos != 'android'
         run: |-
-          goreleaser release --clean --split
+          goreleaser release --clean
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
@@ -159,7 +159,7 @@ jobs:
       - name: Merge builds
         if: github.event_name != 'workflow_dispatch' || inputs.build == 'All' || inputs.build == 'Binary'
         run: |-
-          goreleaser continue --merge --skip publish
+          goreleaser continue --skip publish
           mkdir -p dist/release
           mv dist/*/sing-box*{tar.gz,zip,deb,rpm,_amd64.pkg.tar.zst,_arm64.pkg.tar.zst} dist/release
         env:
