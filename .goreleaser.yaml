@@ -66,5 +66,3 @@ release:
     - archive
     - package
   skip_upload: true
-partial:
-  by: target
