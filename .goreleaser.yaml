@@ -32,7 +32,6 @@ builds:
     tool: "{{ .Env.GOPATH }}/go_legacy/bin/go"
     targets:
       - windows_amd64_v1
-      - windows_386
 archives:
   - &template
     id: archive
