@@ -72,6 +72,11 @@ jobs:
         with:
           repository: 'SagerNet/sing-box'
           fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: builder
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
@@ -97,6 +102,9 @@ jobs:
         run: |-
           git ls-remote --exit-code --tags origin v${{ needs.calculate_version.outputs.version }} || echo "PUBLISHED=false" >> "$GITHUB_ENV"
           git tag v${{ needs.calculate_version.outputs.version }} -f
+      - name: Copy Goreleaser
+        run: |-
+          cp builder/.goreleaser.yaml .
       - name: Build
         if: matrix.goos != 'android'
         run: |-
@@ -126,6 +134,14 @@ jobs:
         with:
           repository: 'SagerNet/sing-box'
           fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: builder
+      - name: Copy Goreleaser
+        run: |-
+          cp builder/.goreleaser.yaml .
       - name: Setup Goreleaser
         uses: goreleaser/goreleaser-action@v6
         with:
