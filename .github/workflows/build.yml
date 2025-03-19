@@ -7,17 +7,9 @@ on:
         description: "Version name"
         required: true
         type: string
-      build:
-        description: "Build type"
-        required: true
-        type: choice
-        default: "All"
-        options:
-          - All
-          - Binary
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}-${{ inputs.build }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}-All
   cancel-in-progress: true
 
 jobs:
@@ -51,21 +43,9 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
   build:
     name: Build binary
-    if: github.event_name != 'workflow_dispatch' || inputs.build == 'All' || inputs.build == 'Binary'
     runs-on: ubuntu-latest
     needs:
       - calculate_version
-    strategy:
-      matrix:
-        include:
-          - name: linux_arm64
-            goos: linux
-            goarch: arm64
-          - name: windows_amd64
-            goos: windows
-            goarch: amd64
-            require_legacy_go: true
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -108,14 +88,10 @@ jobs:
         run: |-
           cp builder/.goreleaser.yaml .
       - name: Build
-        if: matrix.goos != 'android'
         run: |-
           goreleaser release --clean --snapshot
         env:
-          GOOS: ${{ matrix.goos }}
-          GOARCH: ${{ matrix.goarch }}
           GOPATH: ${{ env.HOME }}/go
-          GOARM: ${{ matrix.goarm }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact
         if: github.event_name == 'workflow_dispatch'
@@ -125,7 +101,6 @@ jobs:
           path: 'dist'
   upload:
     name: Upload builds
-    if: always() && github.event_name == 'workflow_dispatch' && (inputs.build == 'All' || inputs.build == 'Binary' || inputs.build == 'Android' || inputs.build == 'Apple' || inputs.build == 'macOS-standalone')
     runs-on: ubuntu-latest
     needs:
       - calculate_version
@@ -136,20 +111,6 @@ jobs:
         with:
           repository: 'SagerNet/sing-box'
           fetch-depth: 0
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          path: builder
-      - name: Copy Goreleaser
-        run: |-
-          cp builder/.goreleaser.yaml .
-      - name: Setup Goreleaser
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: '~> v2'
-          install-only: true
       - name: Cache ghr
         uses: actions/cache@v4
         id: cache-ghr
@@ -175,9 +136,7 @@ jobs:
           path: dist
           merge-multiple: true
       - name: Merge builds
-        if: github.event_name != 'workflow_dispatch' || inputs.build == 'All' || inputs.build == 'Binary'
         run: |-
-          goreleaser continue --skip publish
           mkdir -p dist/release
           mv dist/*/sing-box*{tar.gz,zip,deb,rpm,_amd64.pkg.tar.zst,_arm64.pkg.tar.zst} dist/release
         env:
