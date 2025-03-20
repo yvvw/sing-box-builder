@@ -1,0 +1,50 @@
+version: 2
+project_name: sing-box
+
+builds:
+  - &template
+    id: main
+    main: ./cmd/sing-box
+    flags:
+      - -v
+      - -trimpath
+    ldflags:
+      - -X github.com/sagernet/sing-box/constant.Version={{ .Version }}
+      - -s
+      - -w
+      - -buildid=
+    tags:
+      - with_gvisor
+      - with_clash_api
+    env:
+      - CGO_ENABLED=0
+      - GOTOOLCHAIN=local
+    targets:
+      - linux_arm64
+      - windows_amd64
+    mod_timestamp: '{{ .CommitTimestamp }}'
+  - id: win7
+    <<: *template
+    env:
+      - CGO_ENABLED=0
+      - GOROOT={{ .Env.GOPATH }}/go_win7
+    tool: "{{ .Env.GOPATH }}/go_win7/bin/go"
+    targets:
+      - windows_amd64_v1
+
+archives:
+  - &template
+    id: archive
+    ids:
+      - main
+    formats: tar.gz
+    format_overrides:
+      - goos: windows
+        formats: zip
+    name_template: '{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+    wrap_in_directory: true
+  - id: archive-win7
+    <<: *template
+    ids:
+      - win7
+    name_template: '{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}-win7'
