@@ -49,7 +49,7 @@ jobs:
       - name: Set tag
         run: |-
           echo "HOME=$HOME" >> "$GITHUB_ENV"
-          git tag "v${{ inputs.version }}-${{ inputs.ref }}" -f
+          git tag v${{ inputs.version }} -f
       - name: Build
         run: |-
           cp builder_repo/.goreleaser.yaml .
@@ -96,6 +96,6 @@ jobs:
       - name: Release builds
         run: |-
           export PATH="$PATH:$HOME/go/bin"
-          ghr --replace -p 5 "v${{ inputs.version }}" dist/release
+          ghr --replace -p 5 "v${{ inputs.version }}-${{ inputs.ref }}" dist/release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
