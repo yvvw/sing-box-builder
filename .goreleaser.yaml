@@ -58,10 +58,8 @@ release:
   github:
     owner: yvvw
     name: sing-box-builder
-  draft: true
   prerelease: auto
   mode: replace
   ids:
     - archive
-    - package
   skip_upload: true
