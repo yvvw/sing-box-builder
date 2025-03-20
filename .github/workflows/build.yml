@@ -47,13 +47,15 @@ jobs:
           version: '~> v2'
           install-only: true
       - name: Set tag
-        run: git tag v${{ inputs.version }} -f
+        run: |-
+          echo "HOME=$HOME" >> "$GITHUB_ENV"
+          git tag v${{ inputs.version }} -f
       - name: Build
         run: |-
           cp builder_repo/.goreleaser.yaml .
           goreleaser release --clean --snapshot
         env:
-          GOPATH: "$HOME/go"
+          GOPATH: ${{ env.HOME }}/go
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
