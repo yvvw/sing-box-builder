@@ -21,7 +21,7 @@ builds:
       - GOTOOLCHAIN=local
     targets:
       - linux_arm64
-      - windows_amd64_v1
+      - windows_amd64
     mod_timestamp: '{{ .CommitTimestamp }}'
   - id: legacy
     <<: *template
