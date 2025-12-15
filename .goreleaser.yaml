@@ -16,11 +16,13 @@ builds:
     tags:
       - with_gvisor
       - with_clash_api
+      - with_generate_tool
     env:
       - CGO_ENABLED=0
       - GOTOOLCHAIN=local
     targets:
       - linux_arm64
+      - linux_amd64
       - windows_amd64
     mod_timestamp: '{{ .CommitTimestamp }}'
   - id: win7

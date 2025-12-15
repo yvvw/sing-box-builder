@@ -96,6 +96,12 @@ jobs:
           echo "HOME=$HOME" >> "$GITHUB_ENV"
           git tag ${{ needs.calculate_version.outputs.version }} -f
 
+      - name: Add custom command source code
+        run: |-
+          mv builder_repo/patch/cmd_tools_generate.go cmd/sing-box/
+          mv builder_repo/patch/generate_tool experimental/
+          go get github.com/BurntSushi/toml
+
       - name: Custom goreleaser.yaml
         run: cp builder_repo/.goreleaser.yaml .
 
