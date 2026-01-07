@@ -1,0 +1,1 @@
+https://github.com/SagerNet/serenity/tree/dev/subscription/parser
